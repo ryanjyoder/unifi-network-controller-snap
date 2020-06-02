@@ -1,1 +1,1 @@
-# unifi-network-controller-snap
+# Unifi Network Controller Snap

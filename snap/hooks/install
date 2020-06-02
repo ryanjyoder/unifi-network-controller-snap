@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+mkdir $SNAP_DATA/mongodb
+mkdir $SNAP_DATA/data/db
+
+
+rm -f /usr/lib/unifi/bin /usr/lib/unifi/conf /usr/lib/unifi/dl /usr/lib/unifi/lib /usr/lib/unifi/webapps
+
+ln -s /snap/unifi-network-controller/current/usr/lib/unifi/bin     /usr/lib/unifi/bin
+ln -s /snap/unifi-network-controller/current/usr/lib/unifi/conf    /usr/lib/unifi/conf
+ln -s /snap/unifi-network-controller/current/usr/lib/unifi/dl      /usr/lib/unifi/dl
+ln -s /snap/unifi-network-controller/current/usr/lib/unifi/lib     /usr/lib/unifi/lib
+ln -s /snap/unifi-network-controller/current/usr/lib/unifi/webapps /usr/lib/unifi/webapps

@@ -1,0 +1,99 @@
+name: unifi-network-controller
+base: core 
+version: '5.12.72'
+summary: Single-line elevator pitch for your amazing snap # 79 char long summary
+description: |
+  This is my-snap's description. You have a paragraph or two to tell the
+  most important story about your snap. Keep it under 100 words though,
+  we live in tweetspace and your description wants to look good in the snap
+  store.
+
+grade: devel
+confinement: strict
+
+layout:
+  /usr/lib/unifi:
+    bind: $SNAP_DATA/usr/lib/unifi
+  /usr/share/java:
+    bind: $SNAP/usr/share/java
+  $SNAP/usr/lib/unifi/data:
+    bind: $SNAP_DATA/data
+
+  $SNAP/usr/lib/unifi/run:
+    bind: $SNAP_DATA/run
+
+  $SNAP/usr/lib/unifi/logs:
+    bind: $SNAP_DATA/log
+  
+  /etc/ssl/certs:
+    bind: $SNAP_DATA/etc/ssl/certs
+  /usr/share/ca-certificates-java:
+    bind: $SNAP/usr/share/ca-certificates-java
+  /usr/share/ca-certificates:
+    bind: $SNAP/usr/share/ca-certificates
+  /usr/local/share/ca-certificates:
+    bind: $SNAP_DATA/usr/local/share/ca-certificates
+  /etc/default/cacerts:
+    bind-file: $SNAP/etc/default/cacerts
+  /etc/ca-certificates/update.d:
+    bind: $SNAP/etc/ca-certificates/update.d
+  /etc/dpkg/dpkg.cfg.d:
+    bind: $SNAP_DATA/etc/dpkg/dpkg.cfg.d
+  /etc/dpkg/dpkg.cfg:
+    bind-file: $SNAP_DATA/etc/dpkg/dpkg.cfg
+  /etc/oracle-java9-jdk:
+    bind: $SNAP_DATA/etc/oracle-java9-jdk
+  /etc/ca-certificates.conf:
+    bind-file: $SNAP_DATA/etc/ca-certificates.conf
+
+
+environment:
+  UNIFI_DATA_DIR: /var/snap/unifi-network-controller/current/data
+  UNIFI_LOG_DIR: /var/snap/unifi-network-controller/current/log
+  UNIFI_RUN_DIR: /var/snap/unifi-network-controller/current/run
+  JAVA_HOME: /snap/unifi-network-controller/current/usr/lib/jvm/default-java
+  UNIFI_USER: root
+     
+     
+apps:
+  unifi:
+    command: run_unifi
+    stop-command: /usr/lib/unifi/bin/unifi.init stop
+    plugs: [network, network-bind, mount-observe]
+    daemon: forking
+
+
+parts:
+  patches:
+    source: ./patches
+    plugin: dump
+  unifi:
+    after: [patches]
+    plugin: dump
+    source: https://dl.ui.com/unifi/5.12.72/unifi_sysvinit_all.deb
+    override-build: |
+      rm -f $SNAPCRAFT_PART_BUILD/etc/init.d/unifi $SNAPCRAFT_PART_INSTALL/etc/init.d/unifi
+      ln -s /usr/lib/unifi/bin/unifi.init $SNAPCRAFT_PART_INSTALL/etc/init.d/unifi
+      
+      mkdir $SNAPCRAFT_PART_BUILD/bin
+      ln -s ../usr/bin/mongod $SNAPCRAFT_PART_BUILD/bin/mongod
+      ln -s ../../../../bin/mongod $SNAPCRAFT_PART_BUILD/usr/lib/unifi/bin/mongod
+
+      for p in $(cd $SNAPCRAFT_STAGE/patches && find . -type f) 
+      do
+        patch $SNAPCRAFT_PART_BUILD/$p < $SNAPCRAFT_STAGE/patches/$p
+      done
+
+      snapcraftctl build
+
+
+    stage-packages: [openssl, ca-certificates, procps, coreutils, curl, dpkg, binutils, ca-certificates-java, default-jdk, default-jdk-headless, default-jre, default-jre-headless, fontconfig, fontconfig-config, fonts-dejavu-core, fonts-dejavu-extra, hicolor-icon-theme, java-common, jsvc, libasound2, libasound2-data, libasyncns0, libatk1.0-0, libatk1.0-data, libavahi-client3, libavahi-common3, libavahi-common-data, libboost-filesystem1.58.0, libboost-program-options1.58.0, libboost-system1.58.0, libboost-thread1.58.0, libcairo2, libcommons-daemon-java, libcups2, libdatrie1, libdrm-amdgpu1, libdrm-intel1, libdrm-nouveau2, libdrm-radeon1, libflac8, libfontconfig1, libgdk-pixbuf2.0-0, libgdk-pixbuf2.0-common, libgif7, libgl1-mesa-dri, libgl1-mesa-glx, libglapi-mesa, libgoogle-perftools4, libgraphite2-3, libgtk2.0-0, libgtk2.0-bin, libgtk2.0-common, libharfbuzz0b, libice6, libice-dev, libjbig0, libjpeg8, libjpeg-turbo8, liblcms2-2, libllvm6.0, libnspr4, libnss3, libnss3-nssdb, libogg0, libpango-1.0-0, libpangocairo-1.0-0, libpangoft2-1.0-0, libpciaccess0, libpcrecpp0v5, libpcsclite1, libpixman-1-0, libpthread-stubs0-dev, libpulse0, libsensors4, libsm6, libsm-dev, libsnappy1v5, libsndfile1, libtcmalloc-minimal4, libthai0, libthai-data, libtiff5, libtxc-dxtn-s2tc0, libunwind8, libv8-3.14.5, libvorbis0a, libvorbisenc2, libx11-dev, libx11-doc, libx11-xcb1, libxau-dev, libxcb1-dev, libxcb-dri2-0, libxcb-dri3-0, libxcb-glx0, libxcb-present0, libxcb-render0, libxcb-shm0, libxcb-sync1, libxcomposite1, libxcursor1, libxdamage1, libxdmcp-dev, libxfixes3, libxi6, libxinerama1, libxrandr2, libxrender1, libxshmfence1, libxt6, libxt-dev, libxtst6, libxxf86vm1, libyaml-cpp0.5v5, mongodb-clients, mongodb-server, openjdk-8-jdk, openjdk-8-jdk-headless, openjdk-8-jre, openjdk-8-jre-headless, openjdk-9-jre-headless, x11-common, x11proto-core-dev, x11proto-input-dev, x11proto-kb-dev, xorg-sgml-doctools, xtrans-dev]
+
+  mountpoint:
+    plugin: nil
+    stage-packages: [util-linux]
+    stage: [bin/mountpoint]
+  
+  static:
+    plugin: dump
+    source: ./static

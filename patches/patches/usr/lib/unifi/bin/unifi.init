@@ -1,0 +1,64 @@
+--- patched_files/unifi.init.orig	2020-06-01 18:40:54.410076386 -0700
++++ patched_files/unifi.init.patched	2020-06-01 22:17:07.837213570 -0700
+@@ -13,6 +13,10 @@
+ # Description:		Ubiquiti UniFi Controller
+ ### END INIT INFO
+ 
++if [ "$DEBUG" ]; then
++ 	set -x
++fi
++
+ set_java_home () {
+ 	arch=`dpkg --print-architecture 2>/dev/null`
+ 	if [ ! "$arch" ]; then
+@@ -116,8 +120,6 @@
+ BASEDIR="/usr/lib/unifi"
+ MAINCLASS="com.ubnt.ace.Launcher"
+ 
+-PATH=/bin:/usr/bin:/sbin:/usr/sbin
+-
+ UMASK=027
+ FILE_MODE=$(printf '%x' $((0x7777 - 0x${UMASK} & 0x0666)))
+ DIR_MODE=$(printf '%x' $((0x7777 - 0x${UMASK} & 0x0777)))
+@@ -149,7 +151,7 @@
+ RUNDIR=${UNIFI_RUN_DIR:-/var/run/${NAME}}
+ 
+ JVM_EXTRA_OPTS="${JVM_EXTRA_OPTS} -Dunifi.datadir=${DATADIR} -Dunifi.logdir=${LOGDIR} -Dunifi.rundir=${RUNDIR}"
+-PIDFILE="/var/run/${NAME}.pid"
++PIDFILE="${RUNDIR}/${NAME}.pid"
+ 
+ if [ ! -z "${JAVA_ENTROPY_GATHER_DEVICE}" ]; then
+ 	JVM_EXTRA_OPTS="${JVM_EXTRA_OPTS} -Djava.security.egd=${JAVA_ENTROPY_GATHER_DEVICE}"
+@@ -212,8 +214,8 @@
+  -cp /usr/share/java/commons-daemon.jar:${BASEDIR}/lib/ace.jar \
+  -pidfile ${PIDFILE} \
+  -procname ${NAME} \
+- -outfile SYSLOG \
+- -errfile SYSLOG \
++ -outfile ${LOGDIR}/stdout \
++ -errfile ${LOGDIR}/stderr \
+  -umask ${UMASK} \
+  -user ${UNIFI_USER} \
+  ${JSVC_EXTRA_OPTS} \
+@@ -225,10 +227,18 @@
+ cd ${BASEDIR}
+ 
+ is_not_running() {
+-	start-stop-daemon --test --start --pidfile "${PIDFILE}" \
+-		--startas "${JAVA_HOME}/bin/java" >/dev/null
++	if [ ! -f $PIDFILE ]
++	then
++		return 0
++	fi
++
++	kill -0 $(cat $PIDFILE)
+ 	RC=$?
+-	return ${RC}
++	if [ "$RC" = "0" ]
++	then
++		return 1
++	fi
++	return 0
+ }
+ 
+ case "$1" in

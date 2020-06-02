@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+
+
+mkdir -p $SNAP_DATA/usr/local/share/ca-certificates
+cd /usr/share/ca-certificates/
+find . | sed 's/^.\///' | grep mozilla/ > $SNAP_DATA/etc/ca-certificates.conf
+
+
+mkdir -p /etc/ssl/certs/java
+mkdir -p $SNAP_DATA/etc/ssl/certs/java
+PATH=$SNAP/usr/bin:$PATH:$SNAP/usr/lib/jvm/default-java/bin
+export PATH
+$SNAP/usr/sbin/update-ca-certificates
+$SNAP/usr/sbin/update-ca-certificates -f
+
+
+/usr/lib/unifi/bin/unifi.init start

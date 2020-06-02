@@ -63,7 +63,7 @@ apps:
     daemon: forking
   
   build-ca-certificates:
-    command: bin//build-ca-certificates
+    command: bin/build-ca-certificates
     plugs: [network, network-bind, mount-observe]
     daemon: oneshot
 

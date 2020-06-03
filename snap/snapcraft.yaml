@@ -1,12 +1,13 @@
 name: unifi-network-controller
 base: core 
 version: '5.12.72'
-summary: Single-line elevator pitch for your amazing snap # 79 char long summary
+summary: Unifi Network Controller
 description: |
-  This is my-snap's description. You have a paragraph or two to tell the
-  most important story about your snap. Keep it under 100 words though,
-  we live in tweetspace and your description wants to look good in the snap
-  store.
+    Network Management Controller
+    The UniFi® Software-Defined Networking (SDN) platform is an end-to-end system of network devices across different locations — all controlled from a single interface.
+    
+    Products- UAP, UAP-AC-EDU, UAP–AC–IW, UAP–AC–IW–PRO, UAP-AC-LITE, UAP-AC-LR, UAP-AC-M, UAP-AC-M-PRO, UAP-AC-PRO, UAP-BeaconHD, UAP-FlexHD, UAP-HD, UAP-IW, UAP-IW-HD, UAP-LR, UAP-nanoHD, UAP-Outdoor, UAP-Outdoor+, UAP-Outdoor5, UAP-PRO, UAP-SHD, UAP‑XG, US-16-150W, US‑16‑XG, US-24, US-24-250W, US-24-500W, US-48, US-48-500W, US-48-750W, US-8, US-8-150W, US-8-60W, USG, USG-PRO-4, USG-XG-8, US-L2-24-POE, US-L2-48-POE, USW-16-POE, USW-24-POE, USW-48-POE, USW-Flex, USW-Flex-Mini, USW-Industrial, USW-Pro-24-POE, USW-Pro-48-POE, US-XG-6POE
+
 
 grade: devel
 confinement: strict

@@ -1,7 +1,2 @@
 #!/usr/bin/env sh
 
-if [ -f "$SNAP_DATA/delayed_start_unifi" ]
-then
-    snapctl start --enable unifi-network-controller.unifi
-    rm "$SNAP_DATA/delayed_start_unifi"
-fi

@@ -14,4 +14,5 @@ $SNAP/usr/sbin/update-ca-certificates
 $SNAP/usr/sbin/update-ca-certificates -f
 
 
-touch $SNAP_DATA/delayed_start_unifi
+sleep 90 
+snapctl start --enable unifi-network-controller.unifi

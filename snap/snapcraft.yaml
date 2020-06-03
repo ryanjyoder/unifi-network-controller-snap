@@ -72,7 +72,9 @@ parts:
     after: [patches]
     plugin: dump
     source: https://dl.ui.com/unifi/5.12.72/unifi_sysvinit_all.deb
-    override-build: |  
+    override-build: |
+      rm -f $SNAPCRAFT_PART_BUILD/etc/init.d/unifi $SNAPCRAFT_PART_INSTALL/etc/init.d/unifi
+      
       mkdir $SNAPCRAFT_PART_BUILD/bin
       ln -s ../usr/bin/mongod $SNAPCRAFT_PART_BUILD/bin/mongod
       ln -s ../../../../bin/mongod $SNAPCRAFT_PART_BUILD/usr/lib/unifi/bin/mongod

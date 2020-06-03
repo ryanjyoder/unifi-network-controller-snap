@@ -35,16 +35,16 @@ layout:
     bind: $SNAP_DATA/usr/local/share/ca-certificates
   # /etc/default/cacerts:
   #   bind-file: $SNAP/etc/default/cacerts
-  /etc/ca-certificates/update.d:
-    bind: $SNAP/etc/ca-certificates/update.d
-  /etc/dpkg/dpkg.cfg.d:
-    bind: $SNAP_DATA/etc/dpkg/dpkg.cfg.d
-  /etc/dpkg/dpkg.cfg:
-    bind-file: $SNAP_DATA/etc/dpkg/dpkg.cfg
-  /etc/oracle-java9-jdk:
-    bind: $SNAP_DATA/etc/oracle-java9-jdk
-  /etc/ca-certificates.conf:
-    bind-file: $SNAP_DATA/etc/ca-certificates.conf
+  # /etc/ca-certificates/update.d:
+  #   bind: $SNAP/etc/ca-certificates/update.d
+  # /etc/dpkg/dpkg.cfg.d:
+  #   bind: $SNAP_DATA/etc/dpkg/dpkg.cfg.d
+  # /etc/dpkg/dpkg.cfg:
+  #   bind-file: $SNAP_DATA/etc/dpkg/dpkg.cfg
+  # /etc/oracle-java9-jdk:
+  #   bind: $SNAP_DATA/etc/oracle-java9-jdk
+  # /etc/ca-certificates.conf:
+  #   bind-file: $SNAP_DATA/etc/ca-certificates.conf
 
 
 environment:
@@ -62,11 +62,6 @@ apps:
     plugs: [network, network-bind, mount-observe]
     daemon: forking
   
-  build-ca-certificates:
-    command: bin/build-ca-certificates
-    plugs: [network, network-bind, mount-observe]
-    daemon: oneshot
-
 
 parts:
   patches:
@@ -92,18 +87,21 @@ parts:
       snapcraftctl build
 
 
+    build-packages:
+      - ca-certificates
+      - ca-certificates-java
     stage-packages: 
       - try:
         - libdrm-intel1
         - libv8-3.14.5
       - openssl
       - ca-certificates
+      - ca-certificates-java
       - procps
       - coreutils
       - curl
       - dpkg
       - binutils
-      - ca-certificates-java
       - default-jdk
       - default-jdk-headless
       - default-jre

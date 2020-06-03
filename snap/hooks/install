@@ -12,4 +12,4 @@ ln -s /snap/unifi-network-controller/current/usr/lib/unifi/dl      /usr/lib/unif
 ln -s /snap/unifi-network-controller/current/usr/lib/unifi/lib     /usr/lib/unifi/lib
 ln -s /snap/unifi-network-controller/current/usr/lib/unifi/webapps /usr/lib/unifi/webapps
 
-snapctl stop --disable unifi-network-controller.unifi
+# snapctl stop --disable unifi-network-controller.unifi

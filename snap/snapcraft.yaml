@@ -58,7 +58,7 @@ environment:
      
 apps:
   unifi:
-    command: /usr/lib/unifi/bin/unifi.init start
+    command: bin/run_unifi
     stop-command: /usr/lib/unifi/bin/unifi.init stop
     plugs: [network, network-bind, mount-observe]
     daemon: forking
